@@ -141,10 +141,18 @@ def glob_match(path:str, pattern:str) -> bool:
 
 def send_email(config:DictConfig, html:str):
     sender = config.email.sender
-    receiver = config.email.receiver
+    receiver_raw = config.email.receiver
+    receivers = [r.strip() for r in receivers_raw.split(',') if r.strip()]
     password = config.email.sender_password
     smtp_server = config.email.smtp_server
     smtp_port = config.email.smtp_port
+    for receiver in receivers:
+    try:
+        server.sendmail(sender, receiver, msg.as_string())
+        print(f"Successfully sent to {receiver}")
+    except Exception as e:
+        print(f"Failed to send to {receiver}: {e}")
+        
     def _format_addr(s):
         name, addr = parseaddr(s)
         return formataddr((Header(name, 'utf-8').encode(), addr))
