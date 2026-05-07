@@ -141,7 +141,7 @@ def glob_match(path:str, pattern:str) -> bool:
 
 def send_email(config:DictConfig, html:str):
     sender = config.email.sender
-    receiver_raw = config.email.receiver
+    receivers_raw = config.email.receiver
     receivers = [r.strip() for r in receivers_raw.split(',') if r.strip()]
     password = config.email.sender_password
     smtp_server = config.email.smtp_server
