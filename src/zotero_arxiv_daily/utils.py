@@ -147,11 +147,11 @@ def send_email(config:DictConfig, html:str):
     smtp_server = config.email.smtp_server
     smtp_port = config.email.smtp_port
     for receiver in receivers:
-    try:
-        server.sendmail(sender, receiver, msg.as_string())
-        print(f"Successfully sent to {receiver}")
-    except Exception as e:
-        print(f"Failed to send to {receiver}: {e}")
+        try:
+            server.sendmail(sender, receiver, msg.as_string())
+            print(f"Successfully sent to {receiver}")
+        except Exception as e:
+            print(f"Failed to send to {receiver}: {e}")
         
     def _format_addr(s):
         name, addr = parseaddr(s)
