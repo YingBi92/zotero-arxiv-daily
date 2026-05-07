@@ -141,21 +141,16 @@ def glob_match(path:str, pattern:str) -> bool:
 
 def send_email(config:DictConfig, html:str):
     sender = config.email.sender
-    receiver_raw = os.getenv('RECEIVER', '')
+    receiver_raw = config.email.receiver
     receivers = [r.strip() for r in receiver_raw.split(',') if r.strip()]
     password = config.email.sender_password
     smtp_server = config.email.smtp_server
     smtp_port = config.email.smtp_port
-    for receiver in receivers:
-        try:
-            server.sendmail(sender, receiver, msg.as_string())
-            print(f"Successfully sent to {receiver}")
-        except Exception as e:
-            print(f"Failed to send to {receiver}: {e}")
         
     def _format_addr(s):
         name, addr = parseaddr(s)
         return formataddr((Header(name, 'utf-8').encode(), addr))
+    
 
     msg = MIMEText(html, 'html', 'utf-8')
     msg['From'] = _format_addr('Github Action <%s>' % sender)
@@ -173,7 +168,13 @@ def send_email(config:DictConfig, html:str):
         except Exception as e:
             logger.debug(f"Failed to use SSL. {e}\nTry to use plain text.")
             server = smtplib.SMTP(smtp_server, smtp_port)
-
+            
     server.login(sender, password)
-    server.sendmail(sender, [receiver], msg.as_string())
+    
+    for receiver in receivers:
+        try:
+            server.sendmail(sender, receiver, msg.as_string())
+            print(f"Successfully sent to {receiver}")
+        except Exception as e:
+            print(f"Failed to send to {receiver}: {e}")
     server.quit()
