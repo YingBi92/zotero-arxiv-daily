@@ -154,7 +154,7 @@ def send_email(config:DictConfig, html:str):
 
     msg = MIMEText(html, 'html', 'utf-8')
     msg['From'] = _format_addr('Github Action <%s>' % sender)
-    msg['To'] = _format_addr('You <%s>' % receiver)
+    msg['To'] = ', '.join(receivers)
     today = datetime.datetime.now().strftime('%Y/%m/%d')
     msg['Subject'] = Header(f'Daily arXiv {today}', 'utf-8').encode()
 
@@ -177,4 +177,5 @@ def send_email(config:DictConfig, html:str):
             print(f"Successfully sent to {receiver}")
         except Exception as e:
             print(f"Failed to send to {receiver}: {e}")
+            
     server.quit()
